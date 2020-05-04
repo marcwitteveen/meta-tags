@@ -19,19 +19,19 @@ class MetaTags {
 
 	private $aliases = [];
 
-	public final function __construct()
+	public function __construct()
 	{
 		$this->meta = new \SimpleXMLIterator('<meta/>');
-
         $this->init();
 	}
 
 	protected function init() 
 	{
-
 		$this
+			// Generic
 			->addRule('title', [$this, 'ruleTitle'])
             ->addRule('description', [$this, 'ruleCommon'])
+            ->addRule('keywords', [$this, 'ruleCommon'])
             ->addRule('robots', [$this, 'ruleCommon'])
             ->addRule('canonical', [$this, 'ruleLink'])
             ->addRule('prev', [$this, 'ruleLink'])
@@ -47,22 +47,17 @@ class MetaTags {
             ->addRule('geo.position', [$this, 'ruleCommon'])
             ->addRule('geo.placename', [$this, 'ruleCommon'])
             ->addRule('geo.region', [$this, 'ruleCommon'])
-
+            // Facebook
+            ->addRule('fb:app_id', [$this, 'ruleCommon'])
             ->addRule('og:title', [$this, 'ruleCommon'])
-            ->addAlias('title', 'og:title')
             ->addRule('og:description', [$this, 'ruleCommon'])
-            ->addAlias('description', 'og:description')
             ->addRule('og:type', [$this, 'ruleCommon'])
             ->addRule('og:url', [$this, 'ruleCommon'])
-            ->addAlias('canonical', 'og:url')
             ->addRule('og:determiner', [$this, 'ruleCommon'])
             ->addRule('og:locale', [$this, 'ruleCommon'])
-            ->addAlias('language', 'og:locale')
             ->addRule('og:locale:alternate', [$this, 'ruleCommon'])
             ->addRule('og:site_name', [$this, 'ruleCommon'])
             ->addRule('og:image', [$this, 'ruleCommon'])
-            ->addAlias('og:image:url', 'og:image')
-            ->addAlias('image', 'og:image')
             ->addRule('og:image:secure_url', [$this, 'ruleCommon'])
             ->addRule('og:image:type', [$this, 'ruleCommon'])
             ->addRule('og:image:width', [$this, 'ruleCommon'])
@@ -107,18 +102,15 @@ class MetaTags {
             ->addRule('video:release_date', [$this, 'ruleCommon'])
             ->addRule('video:tag', [$this, 'ruleCommon'])
             ->addRule('video:series', [$this, 'ruleCommon'])
-
+            // Twitter
             ->addRule('twitter:title', [$this, 'ruleCommon'])
-            ->addAlias('title', 'twitter:title')
             ->addRule('twitter:description', [$this, 'ruleCommon'])
-            ->addAlias('description', 'twitter:description')
             ->addRule('twitter:card', [$this, 'ruleCommon'])
             ->addRule('twitter:site', [$this, 'ruleCommon'])
             ->addRule('twitter:site:id', [$this, 'ruleCommon'])
             ->addRule('twitter:creator', [$this, 'ruleCommon'])
             ->addRule('twitter:creator:id', [$this, 'ruleCommon'])
             ->addRule('twitter:image', [$this, 'ruleCommon'])
-            ->addAlias('image', 'twitter:image')
             ->addRule('twitter:image:alt', [$this, 'ruleCommon'])
             ->addRule('twitter:player', [$this, 'ruleCommon'])
             ->addRule('twitter:player:width', [$this, 'ruleCommon'])
@@ -155,50 +147,46 @@ class MetaTags {
 	protected function ruleHTTPEquiv($content, $http_equiv)
     {
         $meta = $this->getMeta()->addChild('meta');
-
         $meta->addAttribute('http-equiv', $http_equiv);
         $meta->addAttribute('content', $content);
     }
 
 	protected function ruleCharset($charset)
     {
-        $this->getMeta()
-            ->addChild('meta')
-            ->addAttribute('charset', $charset);
+        $meta = $this->getMeta()->addChild('meta');
+        $meta->addAttribute('charset', $charset);
     }
 
 	protected function ruleTitle($value)
     {
-        $this->getMeta()
-            ->addChild('title', $value);
+        $this->getMeta()->addChild('title', $value);
     }
 
 	protected function ruleCommon($content, $name)
     {
         $meta = $this->getMeta()->addChild('meta');
-
         $meta->addAttribute('property', $name);
         $meta->addAttribute('content', $content);
     }
 
-	protected final function getMeta()
+	protected function getMeta()
     {
         return $this->meta;
     }
 
-	protected final function addAlias($alias, $name)
+	protected function addAlias($alias, $name)
     {
         $this->aliases[$alias] = $name;
 		return $this;
     }
 
-	protected final function addRule($name, callable $callable)
+	protected function addRule($name, callable $callable)
     {
         $this->rules[$name] = $callable;
 		return $this;
     }
 
-	public final function add($name, $value)
+	public function add($name, $value)
     {
         if (array_key_exists($name, $this->aliases)) {
             $name = $this->aliases[$name];
@@ -211,14 +199,17 @@ class MetaTags {
         return $this;
     }
 
-	public final function build()
+	public function build($output = true)
     {
         $build = '';
 
         for($this->meta->rewind(); $this->meta->valid(); $this->meta->next() ) {
-            $build .= $this->meta->current()->asXML();
+            $build .= $this->meta->current()->asXML() . "\n";
         }
-
-        echo $build;
+        if ($output == true) {
+        	echo $build;
+        } else {
+        	return $build;
+        }
     }
 }
