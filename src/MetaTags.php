@@ -13,7 +13,7 @@ namespace MarcWitteveen\MetaTags;
 
 class MetaTags {
 
-	private $meta;
+	/*private $meta;
 
 	private $rules = [];
 
@@ -61,5 +61,5 @@ class MetaTags {
 	{
 		$build = '';
 		return $build;
-	}
+	}*/
 }
