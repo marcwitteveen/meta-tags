@@ -38,7 +38,7 @@ class MetaTags {
             ->addRule('next', [$this, 'ruleLink'])
             ->addRule('alternate', [$this, 'ruleLink'])
             ->addRule('rss', [$this, 'ruleRSS'])
-            ->addRule('viewport', [$this, 'ruleCommon'])
+            ->addRule('viewport', [$this, 'ruleViewPort'])
             ->addRule('content-language', [$this, 'ruleHTTPEquiv'])
             ->addAlias('language', 'content-language')
             ->addRule('content-type', [$this, 'ruleHTTPEquiv'])
@@ -126,6 +126,13 @@ class MetaTags {
             ->addRule('twitter:app:id:googleplay', [$this, 'ruleCommon'])
             ->addRule('twitter:app:url:googleplay', [$this, 'ruleCommon']);
 	}
+
+    protected function ruleViewPort($viewport) 
+    {
+        $meta = $this->getMeta()->addChild('meta');
+        $meta->addAttribute('name', 'viewport');
+        $meta->addAttribute('content', $viewport);
+    }
 
 	protected function ruleRSS($href, $rel)
     {
