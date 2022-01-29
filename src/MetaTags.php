@@ -185,8 +185,8 @@ class MetaTags {
     protected function ruleName($content, $name) 
     {
         $meta = $this->getMeta()->addChild('meta');
-        $meta->addAttribute('name', 'name');
-        $meta->addAttribute('content', $viewport);
+        $meta->addAttribute('name', $name);
+        $meta->addAttribute('content', $content);
     }
 
 	protected function getMeta()
