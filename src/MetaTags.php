@@ -32,7 +32,7 @@ class MetaTags {
 			->addRule('title', [$this, 'ruleTitle'])
             ->addRule('description', [$this, 'ruleCommon'])
             ->addRule('keywords', [$this, 'ruleCommon'])
-            ->addRule('robots', [$this, 'ruleCommon'])
+            ->addRule('robots', [$this, 'ruleName'])
             ->addRule('dns-prefetch', [$this, 'ruleLink'])
             ->addRule('preconnect', [$this, 'ruleLink'])
             ->addRule('prefetch', [$this, 'ruleLink'])
@@ -140,7 +140,7 @@ class MetaTags {
         $meta->addAttribute('content', $viewport);
     }
 
-	protected function ruleRSS($href, $rel)
+    protected function ruleRSS($href, $rel)
     {
         $this->ruleLink($href, $rel, 'application/rss+xml');
     }
@@ -180,6 +180,13 @@ class MetaTags {
         $meta = $this->getMeta()->addChild('meta');
         $meta->addAttribute('property', $name);
         $meta->addAttribute('content', $content);
+    }
+
+    protected function ruleName($content, $name) 
+    {
+        $meta = $this->getMeta()->addChild('meta');
+        $meta->addAttribute('name', 'name');
+        $meta->addAttribute('content', $viewport);
     }
 
 	protected function getMeta()
